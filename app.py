@@ -504,7 +504,7 @@ if platform == 'rhino':
         }
     special.settings(
         data=settings,
-        defaultChecked=True,
+        default_checked=True,
         key='to-rhino'
     )
 
@@ -513,7 +513,7 @@ if platform == 'rhino':
     # use special.sync token to get it from rhino events
     st.markdown(body=f'<h3>Settings from rhino:</h3>',
                     unsafe_allow_html=True)
-    token = special.sync(defaultChecked=True)
+    token = special.sync(default_checked=True)
     keyword = 'SETTINGS'
     if token and token.startswith('SETTINGS'):
         keyword = token
@@ -521,7 +521,7 @@ if platform == 'rhino':
 
     settings = special.settings(
         data=keyword,
-        defaultChecked=True,
+        default_checked=True,
         key='from-rhino'
     )
     if settings:
@@ -572,7 +572,7 @@ if platform == 'rhino':
 
         button.send(action='BakePollinationModel',
             data=model_dict, 
-            uniqueId='po-shd-model',
+            unique_id='po-shd-model',
             key='po-shd-model')
 elif platform=="sketchup":
     # TODO: Add settings integration with sketchup
@@ -623,6 +623,6 @@ elif platform=="sketchup":
 
         button.send(action='BakePollinationModel',
             data=model_dict, 
-            uniqueId='po-shd-model',
+            unique_id='po-shd-model',
             key='po-shd-model',
             platform=platform)
