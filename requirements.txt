@@ -1,7 +1,8 @@
-osmnx
-geopy
+osmnx==1.1.2
+geopy==2.2.0
 jsonschema
 aiohttp
-ladybug-geojson>=0.0.2
-pollination-streamlit-io>=0.21.0
+ladybug-geojson==0.0.2
+ladybug-display==0.2.1
+pollination-streamlit-io==0.45.1
 honeybee-core>=1.49.28

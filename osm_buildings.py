@@ -92,15 +92,6 @@ def osm_find_buildings(address: str,
     utm_group = ox.project_gdf(cp)
     avg_utm_lat, avg_utm_lon = get_dataframe_centroid(utm_group)
 
-    # if origin
-    if origin:
-        pt = Point(origin.lon, origin.lat)
-        origin_df = gpd.GeoDataFrame(geometry=[pt])
-        origin_df.crs = 'epsg:4326'
-        utm_origin_df = ox.project_gdf(origin_df)
-        avg_utm_lat, avg_utm_lon = get_dataframe_centroid(utm_origin_df)
-        avg_lat, avg_lon = origin.lat, origin.lon
-
     # clipping mask
     if clipping_radius:
         pt = Point(avg_utm_lon, avg_utm_lat)
@@ -109,6 +100,15 @@ def osm_find_buildings(address: str,
             keep_geom_type=True)
         utm_group_copy = utm_group.copy()
         cp = utm_group_copy.to_crs('epsg:4326')
+
+    # if origin
+    if origin:
+        pt = Point(origin.lon, origin.lat)
+        origin_df = gpd.GeoDataFrame(geometry=[pt])
+        origin_df.crs = 'epsg:4326'
+        utm_origin_df = ox.project_gdf(origin_df)
+        avg_utm_lat, avg_utm_lon = get_dataframe_centroid(utm_origin_df)
+        avg_lat, avg_lon = origin.lat, origin.lon
 
     # save to json dictionary
     json_dict['buildings'] = cp.to_json()

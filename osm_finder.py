@@ -109,6 +109,13 @@ def find_features(data: gpd.GeoDataFrame,
 
     utm_group = ox.project_gdf(cp)
     avg_utm_lat, avg_utm_lon = get_dataframe_centroid(utm_group)
+    
+    # clipping mask
+    if clipping_radius:
+        pt = Point(avg_utm_lon, avg_utm_lat)
+        cutter = pt.buffer(clipping_radius)
+        cp = gpd.clip(utm_group, mask=cutter, 
+            keep_geom_type=True).to_crs('epsg:4326')
 
     # if origin
     if origin:
@@ -118,15 +125,6 @@ def find_features(data: gpd.GeoDataFrame,
         utm_origin_df = ox.project_gdf(origin_df)
         avg_utm_lat, avg_utm_lon = get_dataframe_centroid(utm_origin_df)
         avg_lat, avg_lon = origin.lat, origin.lon
-    
-    # clipping mask
-    if clipping_radius:
-        pt = Point(avg_utm_lon, avg_utm_lat)
-        cutter = pt.buffer(clipping_radius)
-        cp = gpd.clip(utm_group, mask=cutter, 
-            keep_geom_type=True).to_crs('epsg:4326')
-
-
 
     # TODO: fix amenities behavior
     # TODO: improve filters
