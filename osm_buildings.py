@@ -14,23 +14,30 @@ from ladybug_geojson.slippy.map import (
     get_recurrent_tiles )
 from osm_finder import get_dataframe_centroid
 
-async def fetch(session, url):
-    async with session.get(url, ssl=ssl.SSLContext()) as response:
-        return await response.json()
+async def get(
+    session: aiohttp.ClientSession,
+    url: str,
+    **kwargs
+) -> dict:
+    print(f"Requesting {url}")
+    resp = await session.request('GET', url=url, **kwargs)
+    data = await resp.json()
+    print(f"Received data for {url}")
+    return data
 
-async def fetch_all(urls, loop):
-    async with aiohttp.ClientSession(loop=loop) as session:
-        results = await asyncio.gather(*[fetch(session, url)
-            for url in urls], return_exceptions=True)
-        return results
-
+async def main(urls, **kwargs):
+    async with aiohttp.ClientSession() as session:
+        tasks = []
+        for u in urls:
+            tasks.append(get(session=session, url=u, **kwargs))
+        htmls = await asyncio.gather(*tasks, return_exceptions=True)
+        return htmls
 
 def from_address_to_lat_lon(address):
     locator = Nominatim(user_agent='loc-finder')
     location = locator.geocode(address)
 
     return location
-
 
 def generate_urls(lat: float, 
         lon: float, 
@@ -64,12 +71,9 @@ def osm_find_buildings(address: str,
         return
 
     lat, lon = location.latitude, location.longitude
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
-    loop = asyncio.get_event_loop()
     urls = generate_urls(lat=lat, 
         lon=lon, zoom=zoom)
-    htmls = loop.run_until_complete(fetch_all(urls, loop))
+    htmls = asyncio.run(main(urls))
     
     print(f'building tiles: {len(htmls)}')
 

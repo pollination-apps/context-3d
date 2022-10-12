@@ -34,7 +34,8 @@ def main():
     initialize()
     st.session_state.platform = get_host(key='host-platform')
     
-    set_origin()
+    if st.session_state.platform != 'web':
+        set_origin()
     set_clippin_radius()
 
     mode = st.sidebar.selectbox(

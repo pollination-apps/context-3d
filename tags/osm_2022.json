@@ -58,6 +58,10 @@
         ],
         [
             "amenity",
+            "training"
+        ],
+        [
+            "amenity",
             "music_school"
         ],
         [
@@ -103,6 +107,10 @@
         [
             "amenity",
             "car_wash"
+        ],
+        [
+            "amenity",
+            "compressed_air"
         ],
         [
             "amenity",
@@ -270,10 +278,6 @@
         ],
         [
             "amenity",
-            "embassy"
-        ],
-        [
-            "amenity",
             "fire_station"
         ],
         [
@@ -315,6 +319,10 @@
         [
             "amenity",
             "dog_toilet"
+        ],
+        [
+            "amenity",
+            "dressing_room"
         ],
         [
             "amenity",
@@ -414,10 +422,6 @@
         ],
         [
             "amenity",
-            "gym"
-        ],
-        [
-            "amenity",
             "hunting_stand"
         ],
         [
@@ -488,6 +492,14 @@
         ],
         [
             "boundary",
+            "forest"
+        ],
+        [
+            "boundary",
+            "forest_compartment"
+        ],
+        [
+            "boundary",
             "hazard"
         ],
         [
@@ -531,6 +543,10 @@
         [
             "building",
             "apartments"
+        ],
+        [
+            "building",
+            "barracks"
         ],
         [
             "building",
@@ -806,6 +822,14 @@
         ],
         [
             "building",
+            "storage_tank"
+        ],
+        [
+            "building",
+            "silo"
+        ],
+        [
+            "building",
             "beach_hut"
         ],
         [
@@ -846,6 +870,10 @@
         ],
         [
             "building",
+            "stilt_house"
+        ],
+        [
+            "building",
             "tent"
         ],
         [
@@ -883,10 +911,6 @@
         [
             "highway",
             "tertiary"
-        ],
-        [
-            "highway",
-            "unclassified"
         ],
         [
             "highway",
@@ -1030,7 +1054,15 @@
         ],
         [
             "highway",
+            "services"
+        ],
+        [
+            "highway",
             "speed_camera"
+        ],
+        [
+            "highway",
+            "stop"
         ],
         [
             "highway",
@@ -1038,11 +1070,7 @@
         ],
         [
             "highway",
-            "services"
-        ],
-        [
-            "highway",
-            "stop"
+            "toll_gantry"
         ],
         [
             "highway",
@@ -1063,10 +1091,6 @@
         [
             "highway",
             "turning_loop"
-        ],
-        [
-            "highway",
-            "toll_gantry"
         ]
     ],
     "landuse": [
@@ -1093,6 +1117,10 @@
         [
             "landuse",
             "retail"
+        ],
+        [
+            "landuse",
+            "institutional"
         ],
         [
             "landuse",
@@ -1133,6 +1161,10 @@
         [
             "landuse",
             "basin"
+        ],
+        [
+            "landuse",
+            "reservoir"
         ],
         [
             "landuse",
@@ -1312,6 +1344,10 @@
         ],
         [
             "railway",
+            "tram_level_crossing"
+        ],
+        [
+            "railway",
             "signal"
         ],
         [
@@ -1337,6 +1373,10 @@
         [
             "railway",
             "wash"
+        ],
+        [
+            "railway",
+            "water_crane"
         ]
     ],
     "route": [
@@ -1585,10 +1625,6 @@
         [
             "shop",
             "leather"
-        ],
-        [
-            "shop",
-            "sewing"
         ],
         [
             "shop",
@@ -2036,6 +2072,10 @@
         ],
         [
             "shop",
+            "insurance"
+        ],
+        [
+            "shop",
             "laundry"
         ],
         [
@@ -2092,11 +2132,11 @@
         ],
         [
             "shop",
-            "vacant"
+            "weapons"
         ],
         [
             "shop",
-            "weapons"
+            "vacant"
         ],
         [
             "shop",

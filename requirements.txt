@@ -1,4 +1,4 @@
-osmnx==1.1.2
+osmnx==1.2.2
 geopy==2.2.0
 jsonschema
 aiohttp

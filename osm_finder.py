@@ -53,7 +53,8 @@ def get_dataframe_from_lat_lon(lat: float,
     lon: float,
     tags: dict,
     radius: int = 500):
-    ox.config(log_console=True, use_cache=True)
+    ox.settings.log_console=True
+    ox.settings.use_cache=True
 
     data = ox.geometries.geometries_from_point(
         [lat, lon],
@@ -67,7 +68,8 @@ def get_dataframe_from_lat_lon(lat: float,
 def get_dataframe_from_address(address: str,
     tags: dict,
     radius: int = 500):
-    ox.config(log_console=True, use_cache=True)
+    ox.settings.log_console=True
+    ox.settings.use_cache=True
 
     data = ox.geometries.geometries_from_address(
         address=address,
