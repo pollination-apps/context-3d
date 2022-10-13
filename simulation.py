@@ -16,13 +16,21 @@ from origin import Origin
 from convert import get_model
 
 GEVENT_SUPPORT=True
-LEGEND_DATA = {}
+
+def _generate_legend_color_set(key: str) -> List[int]:
+    '''Save colors to use with legend'''
+    if key in st.session_state.colors_dict:
+        color = st.session_state.colors_dict[key].tolist()
+    else:
+        np_color = np.random.choice(range(256), size=3)
+        st.session_state.colors_dict[key] = np_color
+        color = np_color.tolist()
+    
+    return color
 
 def generate_osm_layers(key, values):
     ''' Create pydeck layers from pandas data '''
-    color = np.random.choice(range(256), size=3)
-
-    LEGEND_DATA[key] = color
+    color = _generate_legend_color_set(key)
 
     return pdk.Layer(
         'GeoJsonLayer',
@@ -35,8 +43,8 @@ def generate_osm_layers(key, values):
         wireframe=True,
         elevation_scale=1,
         get_elevation='properties.height',
-        get_fill_color=f'{color.tolist()}',
-        get_line_color=color.tolist(),
+        get_fill_color=f'{color}',
+        get_line_color=color,
         pickable=True
     )
 
@@ -48,7 +56,7 @@ def _elaborate_data(dataset, tags, origin, clipping_radius):
 
     objects = []
     for k, v in utm_dict.items():
-        color = list(np.random.choice(range(256), size=3))
+        color = _generate_legend_color_set(k)
         objects.extend(get_geometry(v, color))
 
     return gdf_dict, city_info, avg_lat, avg_lon, objects
@@ -119,7 +127,7 @@ def run_query_by_zoom_building_only(origin:Origin,
     
     objects = []
     for k, v in utm_dict.items():
-        color = list(np.random.choice(range(256), size=3))
+        color = _generate_legend_color_set(k)
         objects.extend(get_geometry(v, color))
 
     return gdf_dict, city_info, avg_lat, avg_lon, objects
@@ -152,7 +160,7 @@ def run_by_address(address, tags, radius):
     if location:
         st.session_state.avg_lat = location.latitude
         st.session_state.avg_lon = location.longitude
-    
+
     gdf_dict, city_info, avg_lat, avg_lon, objects = run_query_by_address(
         st.session_state.origin,
         st.session_state.clipping_radius,
@@ -181,6 +189,14 @@ def run_by_zoom(address, zoom):
     st.session_state.data = gdf_dict
     st.session_state.labels = city_info
 
+def _generate_legend_colors():
+    res = {}
+    for k in st.session_state.data.keys():
+        if k in st.session_state.colors_dict:
+            res[k] = st.session_state.colors_dict[k]
+    
+    return res
+
 def view_output(gdf_dict: dict, 
     city_info: dict):
     lrs = [generate_osm_layers(k, v) for k, v in gdf_dict.items()]
@@ -203,7 +219,6 @@ def view_output(gdf_dict: dict,
             layers=lrs)
 
         # streamlit limit - it does not show hover info
-        generate_legend(LEGEND_DATA)
         st.pydeck_chart(deck)
         
         # print city information
@@ -218,24 +233,28 @@ def set_cad_settings():
         manage_settings(key='cad-settings', settings={'location':loc.to_dict()})
 
 def get_output():
-    col1, col2 = st.columns(2)
-    if st.session_state.platform != 'web':
-        set_cad_settings()
-        with col1:
-            send_geometry(key='geo-preview', 
-            geometry=st.session_state.lbt_objects,
-            option='subscribe-preview',
-            options={'add':True, 
-            'delete':True, 
-            'preview':False,
-            'clear':True})
-        with col2:
-            model_dict = get_model(st.session_state.lbt_objects)
-            send_hbjson(key='model-shades', hbjson=model_dict, 
-            option='add',
-            options={'subscribe-preview':False,
-            'preview':False,
-            'clear':False})
-    else:
-        view_output(st.session_state.data, 
+    col1, col2 = st.columns([1, 3])
+    with col1:
+        generate_legend(_generate_legend_colors())
+    with col2:
+        if st.session_state.platform == 'web':
+            view_output(st.session_state.data, 
             st.session_state.labels)
+        else:
+            set_cad_settings()
+            send_geometry(key='geo-preview', 
+                geometry=st.session_state.lbt_objects,
+                option='subscribe-preview',
+                options={'add':True, 
+                'delete':True, 
+                'preview':False,
+                'clear':True})
+            status = st.checkbox('Convert to Pollination Model')
+            if status:
+                model_dict = get_model(st.session_state.lbt_objects)
+                send_hbjson(key='model-shades', hbjson=model_dict, 
+                    option='add',
+                    options={'subscribe-preview':False,
+                    'preview':False,
+                    'clear':False})
+        

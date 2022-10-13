@@ -23,6 +23,8 @@ def initialize():
         st.session_state.data = None
     if 'labels' not in st.session_state:
         st.session_state.labels = None
+    if 'colors_dict' not in st.session_state:
+        st.session_state.colors_dict = {}
 
 def set_origin():
     '''Specify the lat lon of the origin of CAD 3D space'''

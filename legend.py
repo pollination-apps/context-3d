@@ -10,7 +10,7 @@ def generate_element(text, color):
         border-radius: 50%;
         display: inline-block;
         ">
-    </span><span style="margin: 0px 10px 5px 5px;">{1}</span>
+    </span><span style="margin: 0px 10px 5px 5px;">{1}</span><br>
     '''.format(tuple(color.tolist()), text).replace('\n', '')
 
 def generate_legend(legend_data: dict):
