@@ -67,6 +67,8 @@ def set_clippin_radius():
         value=200,
         key='clipping_radius'
     )
+    st.sidebar.info('It crops objects using a circle.\n' + \
+        'Set it to 0 if you want to disable it.', icon="ℹ️")
 
 def set_osm_filters(mode: str):
     '''Filter by OSM tags'''
