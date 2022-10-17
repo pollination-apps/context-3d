@@ -234,14 +234,18 @@ def set_cad_settings():
 
 def get_output():
     col1, col2 = st.columns([1, 3])
-    with col1:
-        generate_legend(_generate_legend_colors())
-    with col2:
-        if st.session_state.platform == 'web':
+    if st.session_state.platform == 'web':
+        with col1:
+            generate_legend(_generate_legend_colors())
+        with col2:
             view_output(st.session_state.data, 
             st.session_state.labels)
-        else:
-            set_cad_settings()
+    else:
+        set_cad_settings()
+        with col1:
+            generate_legend(_generate_legend_colors())
+        with col2:
+            # TODO: fix small bug tab content <> custom button
             send_geometry(key='geo-preview', 
                 geometry=st.session_state.lbt_objects,
                 option='subscribe-preview',

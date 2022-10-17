@@ -1,4 +1,5 @@
 ''' A module for inputs. '''
+from email.policy import default
 import streamlit as st
 from origin import Origin
 from library import read_tags
@@ -28,19 +29,23 @@ def initialize():
 
 def set_origin():
     '''Specify the lat lon of the origin of CAD 3D space'''
-    st.sidebar.markdown('---')
-    spec_location = st.sidebar.checkbox(
-        label='Set origin'
+    msg = 'It is the latitude and longitude of the origin XY of a 3D space.\n' + \
+        'If this input is disable the app will calculate the reference origin using the ' + \
+        'boundary box of the geometries.'
+    col1, col2, col3 = st.columns([1, 2, 2])
+    spec_location = col1.checkbox(
+        label='Set origin',
+        help=msg
     )
     if spec_location:
-        ref_lat = st.sidebar.number_input(label='Ref. latitude(deg)',
+        ref_lat = col2.number_input(label='Ref. latitude(deg)',
         min_value=-90.0, 
         step=0.1,
         value=0.0,
         max_value=90.0,
         format='%.6f',
         key='ref_lat')
-        ref_lon = st.sidebar.number_input(label='Ref. longitude(deg)',
+        ref_lon = col3.number_input(label='Ref. longitude(deg)',
         min_value=-180.0, 
         step=0.1,
         value=0.0,
@@ -51,24 +56,21 @@ def set_origin():
         st.session_state.origin = Origin(
             lat=ref_lat, 
             lon=ref_lon)
-
-        st.sidebar.info('It is the latitude and longitude of the origin XY of a 3D space.\n' + \
-            'If this input is disable the app will calculate the reference origin using the ' + \
-            'boundary box of the geometries.', icon="ℹ️")
     else:
         st.session_state.origin = None
 
 def set_clippin_radius():
     '''Clippin radius to cut geometries'''
-    st.sidebar.number_input(
+    msg = 'It crops objects using a circle.\n' + \
+        'Set it to 0 if you want to disable it.'
+    st.number_input(
         label='Clipping radius',
         min_value=0,
         max_value=9000,
         value=200,
-        key='clipping_radius'
+        key='clipping_radius',
+        help=msg
     )
-    st.sidebar.info('It crops objects using a circle.\n' + \
-        'Set it to 0 if you want to disable it.', icon="ℹ️")
 
 def set_osm_filters(mode: str):
     '''Filter by OSM tags'''
@@ -182,14 +184,15 @@ def address_inputs():
         key='addr-filter')
     tags = set_osm_filters(mode)
     with st.container():
-        address = st.text_input(
+        col1, col2 = st.columns(2)
+        address = col1.text_input(
             label='Address',
             value='Times Square, Manhattan, NY 10036, US',
             placeholder='Address here!',
             autocomplete='street-address',
             key='address'
         )
-        radius = st.slider(
+        radius = col2.slider(
             label='Radius',
             min_value=10,
             max_value=2000,
@@ -202,24 +205,25 @@ def address_inputs():
             value=False, key='run-addr')
     if submitted:
         run_by_address(address, tags, radius)
+        return True
 
 def zoom_inputs():
-    st.warning(body='Common zoom indexes are 13, 14, 15.')
+    msg ='Common zoom indexes are 13, 14, 15.'
     with st.container():
-        address = st.text_input(
+        col1, col2 = st.columns(2)
+        address = col1.text_input(
             label='Address',
             value='Times Square, Manhattan, NY 10036, US',
             placeholder='Address here!',
             autocomplete='street-address',
             key='zoom_address'
         )
-        zoom = st.slider(
+        zoom = col2.selectbox(
+            options=(12, 13, 14, 15),
             label='Zoom',
-            min_value=12,
-            max_value=15,
-            value=14,
-            step=1,
-            key='zoom'
+            index=2,
+            key='zoom',
+            help=msg
         )
         set_osm_filters('Basic')
 
@@ -227,6 +231,7 @@ def zoom_inputs():
             value=False, key='run-zoom')
     if submitted:
         run_by_zoom(address, zoom)
+        return True
 
 def radius_inputs():
     mode = st.selectbox(
@@ -235,7 +240,8 @@ def radius_inputs():
         key='rad-filter')
     tags = set_osm_filters(mode)
     with st.container():
-        lat = st.number_input(
+        col1, col2 = st.columns(2)
+        lat = col1.number_input(
             'Latitude (deg)',
             min_value=-90.0,
             max_value=90.0,
@@ -243,7 +249,7 @@ def radius_inputs():
             step=0.1,
             format='%.6f',
             key='lat')
-        lon = st.number_input(
+        lon = col2.number_input(
             'Longitude (deg)',
             min_value=-180.0,
             max_value=180.0,
@@ -264,3 +270,4 @@ def radius_inputs():
             value=False, key='run-rad')
     if submitted:
         run_by_radius(lat, lon, tags, radius)
+        return True

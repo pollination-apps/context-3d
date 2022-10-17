@@ -29,31 +29,46 @@ def main():
 
     # title
     st.header('Context 3D')
+    st.caption('Get city information!')
 
     # initialize the app and load up all of the inputs
     initialize()
     st.session_state.platform = get_host(key='host-platform')
+    tab1, tab2 = st.tabs(('Search', 'Results'))
     
-    if st.session_state.platform != 'web':
-        set_origin()
-    set_clippin_radius()
+    with tab1:
+        col1, col2 = st.columns(2)
+        sel_provider = col1.selectbox(
+            label='Provider',
+            options=('OSM Buildings', 'OpenStreetMap'),
+            key='provider')
 
-    mode = st.sidebar.selectbox(
-        label='Search',
-        options=QUERY_MODE,
-        key='search-by')
-    
-    if mode == QUERY_MODE[0]:
-        zoom_inputs()
-    elif mode == QUERY_MODE[1]:
-        address_inputs()
-    else:
-        radius_inputs()
-    st.sidebar.info(COMMENTS[QUERY_MODE.index(mode)], 
-        icon="ℹ️")
+        if sel_provider == 'OSM Buildings':
+            q_options = QUERY_MODE[:1]
+        else:
+            q_options = QUERY_MODE[1:]
 
-    if st.session_state.data:
-        get_output()
+        mode = col2.selectbox(
+            label='Criteria',
+            options=q_options,
+            key='search-by')
+        set_clippin_radius()
+        if st.session_state.platform != 'web':
+            set_origin()
+        
+        if mode == QUERY_MODE[0]:
+            status = zoom_inputs()
+        elif mode == QUERY_MODE[1]:
+            status = address_inputs()
+        else:
+            status = radius_inputs()
+
+        if status:
+            st.success('Done! Go to Results tab.')
+
+    with tab2:
+        if st.session_state.data:
+            get_output()
 
 if __name__ == '__main__':
     main()
