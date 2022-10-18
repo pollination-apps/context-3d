@@ -1,10 +1,10 @@
 ''' A module for inputs. '''
-from email.policy import default
 import streamlit as st
 from origin import Origin
 from library import read_tags
 from simulation import (run_by_radius,
     run_by_address, run_by_zoom)
+from search_location import search_by_coordinates, search_location_by_address
 
 GEVENT_SUPPORT=True
 
@@ -192,6 +192,7 @@ def address_inputs():
             autocomplete='street-address',
             key='address'
         )
+        search_location_by_address(address=address)
         radius = col2.slider(
             label='Radius',
             min_value=10,
@@ -227,6 +228,8 @@ def zoom_inputs():
             key='zoom',
             help=msg
         )
+        search_location_by_address(address=address, 
+            zoom=zoom)
         set_osm_filters('Basic')
 
         submitted = st.checkbox(label='Run', 
@@ -259,6 +262,8 @@ def radius_inputs():
             step=0.1,
             format='%.6f',
             key='lon')
+        search_by_coordinates(lat=lat, 
+            lon=lon)
         radius = st.slider(
             label='Radius',
             min_value=10,
