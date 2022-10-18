@@ -3,6 +3,6 @@ geopy==2.2.0
 jsonschema
 aiohttp
 ladybug-geojson==0.0.2
-ladybug-display==0.2.1
+ladybug-display==0.4.0
 pollination-streamlit-io==0.45.1
 honeybee-core>=1.49.28

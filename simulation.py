@@ -14,6 +14,7 @@ from pollination_streamlit_io import send_geometry, send_hbjson, manage_settings
 from legend import generate_legend
 from origin import Origin
 from convert import get_model
+import json
 
 GEVENT_SUPPORT=True
 
@@ -238,8 +239,17 @@ def get_output():
         with col1:
             generate_legend(_generate_legend_colors())
         with col2:
+            msg = 'Only shades surfaces are supported. Use it for buildings.'
             view_output(st.session_state.data, 
             st.session_state.labels)
+            status = st.checkbox('Generate Pollination Model',
+                help=msg)
+            if status:
+                model_dict = get_model(st.session_state.lbt_objects)
+                st.download_button('Download', 
+                    data=json.dumps(model_dict),
+                    file_name='model.hbjson',
+                    mime='text/json')
     else:
         set_cad_settings()
         with col1:
@@ -261,4 +271,4 @@ def get_output():
                     options={'subscribe-preview':False,
                     'preview':False,
                     'clear':False})
-        
+    

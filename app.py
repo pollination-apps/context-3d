@@ -6,7 +6,7 @@ from pollination_streamlit_io import get_host
 from simulation import get_output
 
 st.set_page_config(
-    page_title='Context 3D',
+    page_title='Find & Import 3D Building Context',
     page_icon='https://app.pollination.cloud/favicon.ico',
     initial_sidebar_state='collapsed',
 )  # type: ignore
@@ -28,47 +28,54 @@ def main():
     """Get context from an OSM query."""
 
     # title
-    st.header('Context 3D')
-    st.caption('Get city information!')
+    st.header('Find & Import 3D Building Context')
+    st.caption('Search, post-process and download context ' +
+        'geometry from Open Street Maps or OSM Buildings ' +
+        'into your simulation using Pollination. This ' + 
+        'Pollination App connects a third party data source ' +
+        'and your simulation project either from Pollination ' +
+        'Cloud, or use the Pollination Rhino Plugin to import' +
+        ' your geometry directly into Rhino')
 
     # initialize the app and load up all of the inputs
     initialize()
     st.session_state.platform = get_host(key='host-platform')
-    tab1, tab2 = st.tabs(('Search', 'Results'))
+    # tab1, tab2 = st.tabs(('Search', 'Results'))
     
-    with tab1:
-        col1, col2 = st.columns(2)
-        sel_provider = col1.selectbox(
-            label='Provider',
-            options=('OSM Buildings', 'OpenStreetMap'),
-            key='provider')
+    # with tab1:
+    col1, col2 = st.columns(2)
+    sel_provider = col1.selectbox(
+        label='Provider',
+        options=('OSM Buildings', 'OpenStreetMap'),
+        key='provider')
 
-        if sel_provider == 'OSM Buildings':
-            q_options = QUERY_MODE[:1]
-        else:
-            q_options = QUERY_MODE[1:]
+    if sel_provider == 'OSM Buildings':
+        q_options = QUERY_MODE[:1]
+    else:
+        q_options = QUERY_MODE[1:]
 
-        mode = col2.selectbox(
-            label='Criteria',
-            options=q_options,
-            key='search-by')
-        set_clippin_radius()
-        if st.session_state.platform != 'web':
-            set_origin()
-        
-        if mode == QUERY_MODE[0]:
-            status = zoom_inputs()
-        elif mode == QUERY_MODE[1]:
-            status = address_inputs()
-        else:
-            status = radius_inputs()
+    mode = col2.selectbox(
+        label='Criteria',
+        options=q_options,
+        key='search-by')
+    set_clippin_radius()
+    if st.session_state.platform != 'web':
+        set_origin()
+    
+    if mode == QUERY_MODE[0]:
+        status = zoom_inputs()
+    elif mode == QUERY_MODE[1]:
+        status = address_inputs()
+    else:
+        status = radius_inputs()
 
-        if status:
-            st.success('Done! Go to Results tab.')
+    # if status:
+    #     st.success('Done! Go to Results tab.')
 
-    with tab2:
-        if st.session_state.data:
-            get_output()
+    # with tab2:
+    st.markdown('---')
+    if st.session_state.data:
+        get_output()
 
 if __name__ == '__main__':
     main()

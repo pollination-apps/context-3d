@@ -208,7 +208,9 @@ def address_inputs():
         return True
 
 def zoom_inputs():
-    msg ='Common zoom indexes are 13, 14, 15.'
+    msg = 'It is a GIS property. For more info see' + \
+        ' https://wiki.openstreetmap.org/wiki/Zoom_levels' +\
+        '. Common zoom indexes for cities are 13, 14, 15.'
     with st.container():
         col1, col2 = st.columns(2)
         address = col1.text_input(
@@ -219,9 +221,9 @@ def zoom_inputs():
             key='zoom_address'
         )
         zoom = col2.selectbox(
-            options=(12, 13, 14, 15),
+            options=(11, 12, 13, 14, 15),
             label='Zoom',
-            index=2,
+            index=3,
             key='zoom',
             help=msg
         )
