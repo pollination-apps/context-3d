@@ -26,12 +26,11 @@ COMMENTS = ['Source: OSM Buildings',
 
 def main():
     """Get context from an OSM query."""
-
     # title
     st.header('Find & Import 3D Building Context')
     st.caption('This Pollination App demonstrates connecting '
-        'a third party data source to the Pollination ecosystem.' 
-        'You can also use the Pollination Rhino Plugin to' 
+        'a third party data source to the Pollination ecosystem.\n' 
+        'You can also use the Pollination Rhino Plugin to ' 
         'import your context geometry directly into Rhino ')
 
     # initialize the app and load up all of the inputs
@@ -71,7 +70,6 @@ def main():
     #     st.success('Done! Go to Results tab.')
 
     # with tab2:
-    st.markdown('---')
     if st.session_state.data:
         get_output()
 

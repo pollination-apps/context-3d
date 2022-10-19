@@ -5,10 +5,11 @@ import json
 import pydeck as pdk
 import streamlit as st
 from geometry_parser import get_geometry
-from osm_finder import ( find_features,
+from query import ( find_features,
     get_dataframe_from_lat_lon, 
-    get_dataframe_from_address)
-from osm_buildings import osm_find_buildings, from_address_to_lat_lon
+    get_dataframe_from_address,
+    osm_find_buildings, 
+    from_address_to_lat_lon)
 from ladybug.location import Location
 from pollination_streamlit_io import send_geometry, send_hbjson, manage_settings
 from legend import generate_legend
@@ -231,7 +232,7 @@ def view_output(gdf_dict: dict,
         # print city information
         st.markdown(body=f'<h3>Report:</h3>',
             unsafe_allow_html=True)
-        st.write(city_info)
+        st.json(city_info, expanded=False)
 
 def set_cad_settings():
     if st.session_state.platform != 'web':

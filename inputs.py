@@ -29,9 +29,10 @@ def initialize():
 
 def set_origin():
     '''Specify the lat lon of the origin of CAD 3D space'''
-    msg = 'It is the latitude and longitude of the origin XY of a 3D space.\n' + \
-        'If this input is disable the app will calculate the reference origin using the ' + \
-        'boundary box of the geometries. Use it to perform accurate query.'
+    msg = 'This input is useful for georeferenced geometries. ' + \
+        'It is the latitude and longitude of the origin XY of a 3D space.\n' + \
+        'It modifies all coordinates of the features according to the given coordinate. ' + \
+        'If it is not active it uses the input location of the query.'
     col1, col2, col3 = st.columns([1, 2, 2])
     spec_location = col1.checkbox(
         label='Set origin',
