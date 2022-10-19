@@ -14,3 +14,8 @@
 
 OpenStreetMap request method needs to be updated following the latest version of osmnx.
 See this [issue](https://github.com/gboeing/osmnx/issues/832)
+
+## Providers
+
+- OpenStreetMap
+- OSM Buildings
