@@ -5,6 +5,8 @@ from streamlit_folium import st_folium
 def search_location_by_address(address: str, zoom:int=12):
     location = Nominatim(user_agent="GetLoc")
     getLocation = location.geocode(address)
+    if getLocation == None:
+        return
     x, y = getLocation.latitude, getLocation.longitude
 
     m = folium.Map(location=[x,y],zoom_start=zoom)

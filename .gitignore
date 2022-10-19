@@ -24,5 +24,6 @@ tox.ini
 *3dmbak
 #generate html model
 model.html
+cache
 
 venv/*

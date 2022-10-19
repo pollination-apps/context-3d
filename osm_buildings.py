@@ -68,7 +68,8 @@ def osm_find_buildings(address: str,
     location = from_address_to_lat_lon(address)
 
     if not location:
-        return
+        return city_info, json_dict, \
+            utm_json_dict, None, None
 
     lat, lon = location.latitude, location.longitude
     urls = generate_urls(lat=lat, 
@@ -80,8 +81,9 @@ def osm_find_buildings(address: str,
     df_list = []
     for feat in htmls:
         data = gpd.GeoDataFrame.from_features(feat)
-        data.crs = 'epsg:4326'
-        df_list.append(data)
+        if data.size != 0:
+            data.crs = 'epsg:4326'
+            df_list.append(data)
 
     df = gpd.GeoDataFrame(pd.concat(df_list, ignore_index=True))
     
@@ -91,10 +93,12 @@ def osm_find_buildings(address: str,
 
     cp = df.copy()
     cp.crs = 'epsg:4326'
-    avg_lat, avg_lon = get_dataframe_centroid(cp)
-
     utm_group = ox.project_gdf(cp)
-    avg_utm_lat, avg_utm_lon = get_dataframe_centroid(utm_group)
+
+    # calculate centroid from init location
+    avg_lat, avg_lon = lat, lon
+    avg_utm_lat, avg_utm_lon = _from_origin_to_utm(Origin(lat=lat, 
+        lon=lon))
 
     # clipping mask
     if clipping_radius:
@@ -107,11 +111,7 @@ def osm_find_buildings(address: str,
 
     # if origin
     if origin:
-        pt = Point(origin.lon, origin.lat)
-        origin_df = gpd.GeoDataFrame(geometry=[pt])
-        origin_df.crs = 'epsg:4326'
-        utm_origin_df = ox.project_gdf(origin_df)
-        avg_utm_lat, avg_utm_lon = get_dataframe_centroid(utm_origin_df)
+        avg_utm_lat, avg_utm_lon = _from_origin_to_utm(origin)
         avg_lat, avg_lon = origin.lat, origin.lon
 
     # save to json dictionary
@@ -131,3 +131,11 @@ def osm_find_buildings(address: str,
     utm_json_dict['buildings'] = envgdf.to_json()
 
     return city_info, json_dict, utm_json_dict, avg_lat, avg_lon
+
+def _from_origin_to_utm(origin):
+    pt = Point(origin.lon, origin.lat)
+    origin_df = gpd.GeoDataFrame(geometry=[pt])
+    origin_df.crs = 'epsg:4326'
+    utm_origin_df = ox.project_gdf(origin_df)
+    avg_utm_lat, avg_utm_lon = get_dataframe_centroid(utm_origin_df)
+    return avg_utm_lat,avg_utm_lon

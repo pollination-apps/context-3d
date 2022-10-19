@@ -29,13 +29,10 @@ def main():
 
     # title
     st.header('Find & Import 3D Building Context')
-    st.caption('Search, post-process and download context ' +
-        'geometry from Open Street Maps or OSM Buildings ' +
-        'into your simulation using Pollination. This ' + 
-        'Pollination App connects a third party data source ' +
-        'and your simulation project either from Pollination ' +
-        'Cloud, or use the Pollination Rhino Plugin to import' +
-        ' your geometry directly into Rhino')
+    st.caption('This Pollination App demonstrates connecting '
+        'a third party data source to the Pollination ecosystem.' 
+        'You can also use the Pollination Rhino Plugin to' 
+        'import your context geometry directly into Rhino ')
 
     # initialize the app and load up all of the inputs
     initialize()
@@ -47,7 +44,8 @@ def main():
     sel_provider = col1.selectbox(
         label='Provider',
         options=('OSM Buildings', 'OpenStreetMap'),
-        key='provider')
+        key='provider',
+        help='Select the source for data.')
 
     if sel_provider == 'OSM Buildings':
         q_options = QUERY_MODE[:1]
@@ -57,10 +55,10 @@ def main():
     mode = col2.selectbox(
         label='Criteria',
         options=q_options,
-        key='search-by')
+        key='search-by',
+        help='Parameters used by the query.')
     set_clippin_radius()
-    if st.session_state.platform != 'web':
-        set_origin()
+    set_origin()
     
     if mode == QUERY_MODE[0]:
         status = zoom_inputs()

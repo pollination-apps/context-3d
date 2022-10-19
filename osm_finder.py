@@ -93,7 +93,8 @@ def get_dataframe_centroid(data:gpd.GeoDataFrame):
 def find_features(data: gpd.GeoDataFrame,
     tags: dict,
     origin: Optional[Origin]=None,
-    clipping_radius: Optional[int]=0):
+    clipping_radius: Optional[int]=0,
+    init_origin: Optional[Origin]=None):
     ''' Get features from OSM request '''
     city_info = {}
     json_dict = {}
@@ -107,11 +108,12 @@ def find_features(data: gpd.GeoDataFrame,
 
     # global avg lat lon (utm)
     cp = data.copy()
-    avg_lat, avg_lon = get_dataframe_centroid(cp)
-
     utm_group = ox.project_gdf(cp)
-    avg_utm_lat, avg_utm_lon = get_dataframe_centroid(utm_group)
-    
+
+    # calculate centroid from init location
+    avg_lat, avg_lon = init_origin.lat, init_origin.lon
+    avg_utm_lat, avg_utm_lon = _from_origin_to_utm(init_origin)
+
     # clipping mask
     if clipping_radius:
         pt = Point(avg_utm_lon, avg_utm_lat)
@@ -121,11 +123,7 @@ def find_features(data: gpd.GeoDataFrame,
 
     # if origin
     if origin:
-        pt = Point(origin.lon, origin.lat)
-        origin_df = gpd.GeoDataFrame(geometry=[pt])
-        origin_df.crs = 'epsg:4326'
-        utm_origin_df = ox.project_gdf(origin_df)
-        avg_utm_lat, avg_utm_lon = get_dataframe_centroid(utm_origin_df)
+        avg_utm_lat, avg_utm_lon = _from_origin_to_utm(origin)
         avg_lat, avg_lon = origin.lat, origin.lon
 
     # TODO: fix amenities behavior
@@ -176,3 +174,11 @@ def find_features(data: gpd.GeoDataFrame,
                 city_info[unique_key] = base_statistic
 
     return city_info, json_dict, utm_json_dict, avg_lat, avg_lon
+
+def _from_origin_to_utm(origin):
+    pt = Point(origin.lon, origin.lat)
+    origin_df = gpd.GeoDataFrame(geometry=[pt])
+    origin_df.crs = 'epsg:4326'
+    utm_origin_df = ox.project_gdf(origin_df)
+    avg_utm_lat, avg_utm_lon = get_dataframe_centroid(utm_origin_df)
+    return avg_utm_lat,avg_utm_lon

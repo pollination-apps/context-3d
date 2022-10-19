@@ -49,11 +49,12 @@ def generate_osm_layers(key, values):
         pickable=True
     )
 
-def _elaborate_data(dataset, tags, origin, clipping_radius):
+def _elaborate_data(dataset, tags, origin, 
+    clipping_radius, init_origin):
     '''Elaborate the OSM request'''
     city_info, gdf_dict, utm_dict, \
         avg_lat, avg_lon = find_features(dataset,
-        tags, origin, clipping_radius)
+        tags, origin, clipping_radius, init_origin)
 
     objects = []
     for k, v in utm_dict.items():
@@ -82,12 +83,14 @@ def run_query_by_radius(origin:Origin,
         tags=tags,
         radius=radius
     )
+    init_origin = Origin(lat=lat, lon=lon)
 
     gdf_dict, city_info, \
         avg_lat, avg_lon, objects = _elaborate_data(dataset=dataset,
         tags=tags,
         origin=origin,
-        clipping_radius=clipping_radius)
+        clipping_radius=clipping_radius,
+        init_origin=init_origin)
     return gdf_dict, city_info, avg_lat, avg_lon, objects
 
 @st.cache(suppress_st_warning=True)
@@ -104,12 +107,15 @@ def run_query_by_address(
         tags=tags,
         radius=radius
     )
+    location = from_address_to_lat_lon(address=address)
+    init_origin = Origin(lat=location.latitude, lon=location.longitude)
 
     gdf_dict, city_info, \
         avg_lat, avg_lon, objects = _elaborate_data(dataset=dataset,
         tags=tags,
         origin=origin,
-        clipping_radius=clipping_radius)
+        clipping_radius=clipping_radius,
+        init_origin=init_origin)
     return gdf_dict, city_info, avg_lat, avg_lon, objects
 
 @st.cache(suppress_st_warning=True)

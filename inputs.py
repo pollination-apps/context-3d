@@ -31,7 +31,7 @@ def set_origin():
     '''Specify the lat lon of the origin of CAD 3D space'''
     msg = 'It is the latitude and longitude of the origin XY of a 3D space.\n' + \
         'If this input is disable the app will calculate the reference origin using the ' + \
-        'boundary box of the geometries.'
+        'boundary box of the geometries. Use it to perform accurate query.'
     col1, col2, col3 = st.columns([1, 2, 2])
     spec_location = col1.checkbox(
         label='Set origin',
@@ -183,7 +183,7 @@ def address_inputs():
         options=('Basic', 'Advanced'),
         key='addr-filter')
     tags = set_osm_filters(mode)
-    with st.container():
+    with st.form('Search'):
         col1, col2 = st.columns(2)
         address = col1.text_input(
             label='Address',
@@ -202,24 +202,24 @@ def address_inputs():
             key='by_address_radius'
         )
         
-        submitted = st.checkbox(label='Run', 
-            value=False, key='run-addr')
-    if submitted:
-        run_by_address(address, tags, radius)
-        return True
+        submitted = st.form_submit_button('Run')
+        if submitted:
+            run_by_address(address, tags, radius)
+            return True
 
 def zoom_inputs():
     msg = 'It is a GIS property. For more info see' + \
         ' https://wiki.openstreetmap.org/wiki/Zoom_levels' +\
         '. Common zoom indexes for cities are 13, 14, 15.'
-    with st.container():
+    with st.form('Search'):
         col1, col2 = st.columns(2)
         address = col1.text_input(
             label='Address',
             value='Times Square, Manhattan, NY 10036, US',
             placeholder='Address here!',
             autocomplete='street-address',
-            key='zoom_address'
+            key='zoom_address',
+            help='Address of a location or coordinates [lat, lon].'
         )
         zoom = col2.selectbox(
             options=(11, 12, 13, 14, 15),
@@ -232,11 +232,10 @@ def zoom_inputs():
             zoom=zoom)
         set_osm_filters('Basic')
 
-        submitted = st.checkbox(label='Run', 
-            value=False, key='run-zoom')
-    if submitted:
-        run_by_zoom(address, zoom)
-        return True
+        submitted = st.form_submit_button('Run')
+        if submitted:
+            run_by_zoom(address, zoom)
+            return True
 
 def radius_inputs():
     mode = st.selectbox(
@@ -244,7 +243,7 @@ def radius_inputs():
         options=('Basic', 'Advanced'),
         key='rad-filter')
     tags = set_osm_filters(mode)
-    with st.container():
+    with st.form(key='Search'):
         col1, col2 = st.columns(2)
         lat = col1.number_input(
             'Latitude (deg)',
@@ -273,8 +272,7 @@ def radius_inputs():
             key='by_radius_radius'
         )
 
-        submitted = st.checkbox(label='Run', 
-            value=False, key='run-rad')
-    if submitted:
-        run_by_radius(lat, lon, tags, radius)
-        return True
+        submitted = st.form_submit_button('Run')
+        if submitted:
+            run_by_radius(lat, lon, tags, radius)
+            return True
