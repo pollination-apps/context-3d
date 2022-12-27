@@ -37,7 +37,7 @@ def get_geometry(data, color):
         h = obj.properties.get('height')
         if h and isinstance(geo, Face3D):
             geo = Polyface3D.from_offset_face(geo, h)
-            dis_geo = DisplayPolyface3D(geo, [col])
+            dis_geo = DisplayPolyface3D(geo, col)
             dis_geometries.append(dis_geo.to_dict())
             continue
         
